@@ -148,6 +148,7 @@ function getMenuOptions(conversation: any) {
              new ChoiceModel({
                label: 'RAM',
                type: 'label',
+               enabledFor: Layer.client.user.id,
                allowReselect: true,
                preselectedChoice: 'large',
                choices: [
@@ -159,6 +160,7 @@ function getMenuOptions(conversation: any) {
              new ChoiceModel({
                label: 'Color',
                type: 'label',
+               enabledFor: Layer.client.user.id,
                allowReselect: true,
                preselectedChoice: 'offwhite',
                choices: [
@@ -215,6 +217,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Size',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: 'small',
                       choices: [
                         {text:  'Small', id: 'small'},
@@ -225,6 +228,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Color',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: 'white',
                       choices: [
                         {text:  'White', id: 'white'},
@@ -247,6 +251,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Size',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: '',
                       choices: [
                         {text:  'Small', id: 'small'},
@@ -257,6 +262,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Color',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: 'gold',
                       choices: [
                         {text:  'White', id: 'white'},
@@ -279,6 +285,7 @@ function getMenuOptions(conversation: any) {
                   new ChoiceModel({
                     label: 'Size',
                     type: 'label',
+                    enabledFor: Layer.client.user.id,
                     preselectedChoice: 'medium',
                     choices: [
                       {text:  'Small', id: 'small'},
@@ -289,6 +296,7 @@ function getMenuOptions(conversation: any) {
                   new ChoiceModel({
                     label: 'Color',
                     type: 'label',
+                    enabledFor: Layer.client.user.id,
                     choices: [
                       {text:  'White', id: 'white'},
                       {text:  'Black', id: 'black'},
@@ -303,11 +311,48 @@ function getMenuOptions(conversation: any) {
       },
     },
     {
-      text: 'Create Choice Message',
+      text: 'Create Single Selection Choice Message',
       method: function() {
         const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
         const model = new ChoiceModel({
+          enabledFor: Layer.client.user.id,
           label: 'What is the airspeed velocity of an unladen swallow?',
+          responseName: 'airspeedselection',
+          choices: [
+             {text:  'Zero, it can not get off the ground!', id: 'zero'},
+             {text:  'Are we using Imperial or Metric units?', id: 'clever bastard'},
+             {text:  'What do you mean? African or European swallow?', id: 'just a smart ass'},
+           ],
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Changeable Selection Choice Message',
+      method: function() {
+        const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
+        const model = new ChoiceModel({
+          enabledFor: Layer.client.user.id,
+          label: 'What is the airspeed velocity of an unladen swallow?',
+          allowReselect: true,
+          responseName: 'airspeedselection',
+          choices: [
+             {text:  'Zero, it can not get off the ground!', id: 'zero'},
+             {text:  'Are we using Imperial or Metric units?', id: 'clever bastard'},
+             {text:  'What do you mean? African or European swallow?', id: 'just a smart ass'},
+           ],
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Multiselect Choice Message',
+      method: function() {
+        const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
+        const model = new ChoiceModel({
+          enabledFor: Layer.client.user.id,
+          label: 'What is the airspeed velocity of an unladen swallow?',
+          allowMultiselect: true,
           responseName: 'airspeedselection',
           choices: [
              {text:  'Zero, it can not get off the ground!', id: 'zero'},
@@ -368,6 +413,42 @@ function getMenuOptions(conversation: any) {
         });
         model.send({ conversation });
       },
+    },
+    {
+      text: 'Create Custom Opinion Message',
+      method: function() {
+        const OpinionModel = Layer.Core.Client.getMessageTypeModelClass('OpinionModel');
+        const model = new OpinionModel({
+          comment: 'I love this stuff',
+          rating: 4,
+          description: 'Mary had a little lamb, little lamb, little lamb.  Mary had a little lamb, who made a tasty stew!',
+          author: 'Frodo the Dodo',
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Custom Pie Chart Message',
+      method: function() {
+        const PieChartModel = Layer.Core.Client.getMessageTypeModelClass('PieChartModel');
+        const FileModel = Layer.Core.Client.getMessageTypeModelClass('FileModel');
+        const model = new PieChartModel({
+          title: 'Employee Salaries',
+          fileModel: new FileModel({
+            source: new Layer.Core.MessagePart({
+              body: `Employee Name, Salary
+Mike, 22500
+Bob, 35000
+Alice, 44000
+Frank, 27000
+Floyd, 92000
+Fritz, 18500`,
+              mimeType: 'text/csv'
+            })
+          })
+        });
+        model.send({ conversation });
+      }
     }
   ];
 }

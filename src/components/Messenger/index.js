@@ -16,7 +16,7 @@ import getMenuOptions from "./sample-menu";
 import "./message-handlers";
 
 const { dateSeparator } = Layer.UI.UIUtils;
-const { uuid } = Layer.Utils;
+const { uuid, isMobile } = Layer.Utils;
 
 // Extract the Layer XDK UI Components that are to be used in this Project
 const {
@@ -80,12 +80,27 @@ class Messenger extends Component<Props, State> {
     // If the Conversations Query has already fetched all conversations, then this will already be present.
     // Else getConversation(id, true) will fetch it from the server and trigger "conversations:loaded" event when complete.
     if (this.props.match.params.conversationId) {
-      this.state.conversation = layerClient.getConversation(
-        this.props.match.params.conversationId,
-        true
-      );
-      this.setupConversation();
+
+      if (layerClient.isReady) {
+        this.state.conversation = layerClient.getConversation(this.props.match.params.conversationId, true);
+        this.setupConversation();
+      } else {
+        layerClient.once('ready', () => {
+          this.state.conversation = layerClient.getConversation(this.props.match.params.conversationId, true);
+          this.setupConversation();
+        });
+      }
     }
+  }
+
+  // Handle reauthentication
+  componentDidMount() {
+    layerClient.on('challenge', e => {
+      this.props.history.push({
+        pathname: '/',
+        previousLocation: { pathname: this.props.location.pathname }
+      });
+    }, this)
   }
 
   /**
@@ -133,7 +148,7 @@ class Messenger extends Component<Props, State> {
 
   /**
    * Whenever a conversation is selected in the Conversation List, navigate to that Conversation.
-   * This will cause `render` to be called, and the new Conversation ID to be passed to the Conversatin View.
+   * This will cause `render` to be called, and the new Conversation ID to be passed to the Conversation View.
    */
   onConversationSelected(e: any) {
     if (!e.detail.item) return;
@@ -179,6 +194,7 @@ class Messenger extends Component<Props, State> {
    * Just return `false` to prevent a message from rendering.
    */
   filterMessages(message: any) {
+
     const model = message.createModel();
     return (
       !model ||
@@ -312,20 +328,55 @@ class Messenger extends Component<Props, State> {
   customizeConversationView() {
     return {
       composerButtonPanelRight: () => {
-        return (
-          <div>
-            <SendButton />
-            <FileUploadButton multiple="true" />
-            <MenuButton getMenuItems={this.generateMenu.bind(this)} />
-          </div>
-        );
-      }
+        return (<div>
+          <SendButton />
+          <FileUploadButton
+            multiple="true"
+            onFilesSelected={this.filesSelected.bind(this)}/>
+          <MenuButton
+            getMenuItems={this.generateMenu.bind(this)}
+          />
+        </div>);
+      },
     };
   }
 
   generateMenu() {
     if (this.state.conversation) {
       return getMenuOptions(this.state.conversation);
+    }
+  }
+
+  // Support use of the PDF Custom Message Type by detecting when the File Upload Widget receives a PDF file.
+  // TODO: This does not handle PDF files that are dragged and dropped into the Conversation View.
+  filesSelected(evt) {
+    const files = evt.detail.files;
+    if (files.length === 1 && files[0].type === 'application/pdf') {
+      evt.preventDefault();
+      const PDFModel = Layer.Core.Client.getMessageTypeModelClass('PDFModel');
+
+      const model = new PDFModel({
+        source: files[0],
+        author: Layer.client.user.displayName,
+        title: files[0].name,
+      });
+      model.send({ conversation: this.state.conversation });
+      return;
+    }
+
+    if (files.length === 1 && (files[0].type === 'text/csv' || files[0].name.match(/\.csv$/))) {
+      evt.preventDefault();
+      const PieChartModel = Layer.Core.Client.getMessageTypeModelClass('PieChartModel');
+      const FileModel = Layer.Core.Client.getMessageTypeModelClass('FileModel');
+
+      var model = new PieChartModel({
+        title: "Eat Pie?",
+        fileModel: new FileModel({
+          source: files[0]
+        })
+      });
+      model.send({ conversation: this.state.conversation });
+      return;
     }
   }
 
@@ -412,26 +463,19 @@ class Messenger extends Component<Props, State> {
 
   render() {
     // Setup the CSS Classes for the root element
-    const isMobile =
-      navigator.userAgent.match(/android/i) ||
-      navigator.platform === "iPhone" ||
-      navigator.platform === "iPad";
-    let rootClasses = "messenger";
-    if (this.state.conversationId) rootClasses += " has-conversation";
-    if (isMobile) rootClasses += " is-mobile";
+    let rootClasses = 'messenger';
+    if  (this.state.conversationId) rootClasses += ' has-conversation';
+    if (isMobile) rootClasses += ' is-mobile';
 
-    return (
-      <div className={rootClasses}>
-        <Notifier
-          notifyInForeground="toast"
-          onMessageNotification={this.onMessageNotification}
-          onNotificationClick={this.onNotificationClick}
-        />
-        {this.state.showEditConversationDialog ? this.renderDialog() : null}
-        {this.renderLeftPanel()}
-        {this.renderRightPanel()}
-      </div>
-    );
+    return <div className={rootClasses}>
+      <Notifier
+        notifyInForeground="toast"
+        onMessageNotification={this.onMessageNotification}
+        onNotificationClick={this.onNotificationClick} />
+      {this.state.showEditConversationDialog ? this.renderDialog() : null}
+      {this.renderLeftPanel()}
+      {this.renderRightPanel()}
+    </div>
   }
 }
 

@@ -21,13 +21,23 @@ import '@layerhq/web-xdk/ui/components/layer-notifier';
 import '@layerhq/web-xdk/ui/components/layer-conversation-list';
 import '@layerhq/web-xdk/ui/components/layer-identity-list';
 
+// Uncomment to enable indexedDB data caching
+// import '@layerhq/web-xdk/core/db-manager';
+
+import './custom-message-types/opinion-message/vnd-customco-opinion-message-type-view';
+import './custom-message-types/pdf-message/vnd-customco-pdf-message-type-view';
+import './custom-message-types/pie-chart-message/vnd-customco-pie-chart-message-type-view';
+
 
 // initialize Layer Client with your appID
 const layerClient = Layer.init({
   appId: layerConfig[0].app_id,
-})
 
-const LayerReactComponents = Layer.UI.adapters.react(React, ReactDom)
+  // Change to true to enable indexedDB data caching
+  isPersistenceEnabled: false,
+});
+
+const LayerReactComponents = Layer.UI.adapters.react(React, ReactDom);
 
 export { LayerReactComponents };
 export { Layer };
