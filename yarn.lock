@@ -2,15 +2,14 @@
 # yarn lockfile v1
 
 
-"@layerhq/web-xdk@^1.0.0-pre2.2":
-  version "1.0.0-pre2.2"
-  resolved "https://registry.yarnpkg.com/@layerhq/web-xdk/-/web-xdk-1.0.0-pre2.2.tgz#6fe445a38f9bb101742998373c6f2f83ad5a4284"
+"@layerhq/web-xdk@^1.0.0-pre2.8":
+  version "1.0.0-pre2.8"
+  resolved "https://registry.yarnpkg.com/@layerhq/web-xdk/-/web-xdk-1.0.0-pre2.8.tgz#ff37c417e8ec121317a8f1642d20463009214ff9"
   dependencies:
     autolinker "^1.2.1"
     backbone-events-standalone "^0.2.7"
     base64-js "^1.2.0"
     blueimp-load-image "^2.9.0"
-    grunt-jsduck "^1.0.1"
     layer-patch "^1.2.1"
     notifyjs "^2.0.3"
     remarkable-emoji "^0.1.3"
@@ -1757,10 +1756,6 @@ damerau-levenshtein@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/damerau-levenshtein/-/damerau-levenshtein-1.0.4.tgz#03191c432cb6eea168bb77f3a55ffdccb8978514"
 
-dargs@~0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/dargs/-/dargs-0.1.0.tgz#2364ad9f441f976dcd5fe9961e21715665a5e3c3"
-
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
@@ -2854,12 +2849,6 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
-
-grunt-jsduck@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/grunt-jsduck/-/grunt-jsduck-1.0.1.tgz#3ad8fd8be32b7fad1399bff4de02ddb95667ac64"
-  dependencies:
-    dargs "~0.1.0"
 
 gzip-size@3.0.0:
   version "3.0.0"
