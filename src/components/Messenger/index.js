@@ -1,3 +1,4 @@
+// @flow
 /**
  * This UI Component manages the Layer Conversations.
  *
@@ -6,24 +7,54 @@
  * It also uses an Identity List via the EditCOnversationDialog.js file to create new Conversations.
  */
 
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
-import { layerClient, LayerReactComponents, Layer } from '../../get-layer';
-import EditConversationDialog from './EditConversationDialog';
-import getMenuOptions from './sample-menu';
-import './message-handlers';
+import { layerClient, LayerReactComponents, Layer } from "../../get-layer";
+import EditConversationDialog from "./EditConversationDialog";
+import getMenuOptions from "./sample-menu";
+import "./message-handlers";
 
 const { dateSeparator } = Layer.UI.UIUtils;
 const { uuid } = Layer.Utils;
 
 // Extract the Layer XDK UI Components that are to be used in this Project
-const { Notifier, ConversationList, ConversationView, SendButton, FileUploadButton, MenuButton, Presence } = LayerReactComponents;
+const {
+  Notifier,
+  ConversationList,
+  ConversationView,
+  SendButton,
+  FileUploadButton,
+  MenuButton,
+  Presence
+} = LayerReactComponents;
 
-class Messenger extends Component {
-  constructor (props) {
-    super (props)
-    this.state = {};
+type Props = {
+  history: any,
+  location: any,
+  match: any
+};
+
+type State = {
+  conversation: any,
+  conversationName: string,
+  isLoaded: boolean,
+  conversationId: string,
+  showEditConversationDialog: boolean,
+  editConversationId: string
+};
+
+class Messenger extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      conversationId: "",
+      conversation: null,
+      conversationName: "",
+      isLoaded: false,
+      showEditConversationDialog: false,
+      editConversationId: ""
+    };
   }
 
   /**
@@ -39,9 +70,9 @@ class Messenger extends Component {
     // If not authenticated, redirect to the Login page
     if (!layerClient.isAuthenticated) {
       this.props.history.push({
-        pathname: '/',
+        pathname: "/",
         previousLocation: { pathname: this.props.location.pathname }
-      })
+      });
       return;
     }
 
@@ -49,7 +80,10 @@ class Messenger extends Component {
     // If the Conversations Query has already fetched all conversations, then this will already be present.
     // Else getConversation(id, true) will fetch it from the server and trigger "conversations:loaded" event when complete.
     if (this.props.match.params.conversationId) {
-      this.conversation = layerClient.getConversation(this.props.match.params.conversationId, true);
+      this.state.conversation = layerClient.getConversation(
+        this.props.match.params.conversationId,
+        true
+      );
       this.setupConversation();
     }
   }
@@ -62,32 +96,38 @@ class Messenger extends Component {
    * Note: This works off of `this.conversation` as its input, and this value may be `null`
    */
   setupConversation() {
-    const conversation = this.conversation;
+    const conversation = this.state.conversation;
 
     // If the conversation is still loading, wait for it to finish, and then set isLoaded to true
     if (conversation && conversation.isLoading) {
-      conversation.once('conversations:loaded', () => {
+      conversation.once("conversations:loaded", () => {
         this.setState({
-          isLoaded: true,
+          isLoaded: true
         });
       });
     }
 
     // Watch for any changes to the metadata and update the conversationName
     if (conversation) {
-      conversation.on('conversations:change', (evt) => {
-        if (evt.hasProperty('metadata')) {
-          this.setState({ conversationName: conversation.metadata.conversationName });
-        }
-      }, this);
+      conversation.on(
+        "conversations:change",
+        evt => {
+          if (evt.hasProperty("metadata")) {
+            this.setState({
+              conversationName: conversation.metadata.conversationName
+            });
+          }
+        },
+        this
+      );
     }
 
     // Setup our inital state
     this.setState({
-      conversationId: conversation ? uuid(conversation.id) : '',
+      conversationId: conversation ? uuid(conversation.id) : "",
       conversation,
       conversationName: conversation && conversation.metadata.conversationName,
-      isLoaded: conversation && !conversation.isLoading,
+      isLoaded: conversation && !conversation.isLoading
     });
   }
 
@@ -95,21 +135,21 @@ class Messenger extends Component {
    * Whenever a conversation is selected in the Conversation List, navigate to that Conversation.
    * This will cause `render` to be called, and the new Conversation ID to be passed to the Conversatin View.
    */
-  onConversationSelected (e) {
-    if (!e.detail.item) return
-    const conversation = e.detail.item.toObject()
-    this.props.history.push(`/conversations/${uuid(conversation.id)}`)
+  onConversationSelected(e: any) {
+    if (!e.detail.item) return;
+    const conversation = e.detail.item.toObject();
+    this.props.history.push(`/conversations/${uuid(conversation.id)}`);
   }
 
   /**
    * Clear the selected conversation, navigates such that the `render` is called with no Conversation ID.
    */
   onConversationDeselected = () => {
-    this.props.history.push('/conversations/');
+    this.props.history.push("/conversations/");
     this.setState({
-      conversationId: ''
+      conversationId: ""
     });
-  }
+  };
 
   /**
    * Whenever properties change, determine if the Conversation ID has changed, and if so:
@@ -117,16 +157,20 @@ class Messenger extends Component {
    * * Unsubscribe to all events from the prior conversation
    * * Call setupConversation() with the new conversation
    */
-  componentWillReceiveProps (props) {
-    if (this.props.match.params.conversationId !== props.match.params.conversationId) {
+  componentWillReceiveProps(props: Props) {
+    if (
+      this.props.match.params.conversationId !==
+      props.match.params.conversationId
+    ) {
       const conversationId = props.match.params.conversationId;
-      const newConversation = conversationId ? layerClient.getConversation(conversationId) : null;
-      if (this.conversation) this.conversation.off(null, null, this);
-      this.conversation = newConversation;
+      const newConversation = conversationId
+        ? layerClient.getConversation(conversationId)
+        : null;
+      if (this.conversation) this.state.conversation.off(null, null, this);
+      this.state.conversation = newConversation;
       this.setupConversation();
     }
   }
-
 
   /**
    * Certain types of messages can be filtered out of the Conversation View.
@@ -134,9 +178,12 @@ class Messenger extends Component {
    * Note: this does not at this time filter them out of the Conversation List's Last Message.
    * Just return `false` to prevent a message from rendering.
    */
-  filterMessages (message) {
+  filterMessages(message: any) {
     const model = message.createModel();
-    return !model || !(model.getModelName() === 'ResponseModel' && !model.displayModel);
+    return (
+      !model ||
+      !(model.getModelName() === "ResponseModel" && !model.displayModel)
+    );
 
     // Uncomment this to hide Response Messages sent by this user
     // return !(model.getModelName() === 'ResponseModel' && (message.sender === layerClient.user || !model.displayModel));
@@ -145,76 +192,83 @@ class Messenger extends Component {
   /**
    * Toggle presence between BUSY and AVAILABLE
    */
-  togglePresence = (event) => {
+  togglePresence = (event: any) => {
     event.preventDefault();
-    var nextStatus = layerClient.user.status === Layer.Core.Identity.STATUS.AVAILABLE ?
-      Layer.Core.Identity.STATUS.BUSY : Layer.Core.Identity.STATUS.AVAILABLE
+    var nextStatus =
+      layerClient.user.status === Layer.Core.Identity.STATUS.AVAILABLE
+        ? Layer.Core.Identity.STATUS.BUSY
+        : Layer.Core.Identity.STATUS.AVAILABLE;
     layerClient.user.setStatus(nextStatus);
-  }
+  };
 
   /**
    * Start creating a Conversation. Shows the EditConversationDialog.
    */
-  startCreateConversation = (event) => {
+  startCreateConversation = (event: any) => {
     event.preventDefault();
     this.setState({ showEditConversationDialog: true });
-  }
+  };
 
   /**
    * Start editing a Conversation. Shows the EditConversationDialog.
    */
-  startEditConversation = (event) => {
+  startEditConversation = (event: any) => {
     event.preventDefault();
     this.setState({
       showEditConversationDialog: true,
-      editConversationId: this.state.conversationId,
+      editConversationId: this.state.conversationId
     });
-  }
+  };
 
   /**
    * Dismiss the EditConversationDialog
    */
   cancelCreateConversation = () => {
     this.setState({ showEditConversationDialog: false });
-  }
+  };
 
   /**
    * Once the EditConversationDialog reports back that the Conversation has been created,
    * update our state and our URL
    */
-  onCreateConversation = (conversation) => {
+  onCreateConversation = (conversation: any) => {
     this.setState({
       conversationId: uuid(conversation.id),
       showEditConversationDialog: false,
-      editConversationId: '',
+      editConversationId: ""
     });
-    this.props.history.push(`/conversations/${uuid(conversation.id)}`)
-  }
+    this.props.history.push(`/conversations/${uuid(conversation.id)}`);
+  };
 
   /**
    * Logout of the client and navigate to the Login page
    */
   logout = () => {
     layerClient.logout();
-    this.props.history.push('/')
-  }
+    this.props.history.push("/");
+  };
 
   /**
    * When user clicks on a Toast or Desktop notification, update the selected Conversation
    */
-  onNotificationClick = (event) => {
-    this.props.history.push(`/conversations/${uuid(event.detail.item.conversationId)}`)
-  }
+  onNotificationClick = (event: any) => {
+    this.props.history.push(
+      `/conversations/${uuid(event.detail.item.conversationId)}`
+    );
+  };
 
   /**
    * When a new message arrives, notifiy the user if the Window/tab is in the background,
    * or the ConversationView is showing a different Conversation.
    */
-  onMessageNotification = (event) => {
-    if (event.detail.item.conversationId === this.state.conversationId && !event.detail.isBackground) {
+  onMessageNotification = (event: any) => {
+    if (
+      event.detail.item.conversationId === this.state.conversationId &&
+      !event.detail.isBackground
+    ) {
       event.preventDefault();
     }
-  }
+  };
 
   /**
    * Typically the title of a Conversation is stored in `conversation.metadata.converstationName.
@@ -225,30 +279,25 @@ class Messenger extends Component {
     var title;
 
     if (activeConversation) {
-
       // If the conversation is loading from the server, then just hold off rendering anything other than a placeholder
       if (activeConversation.isLoading) {
-        title = '...';
+        title = "...";
       } else {
-
         // If there is a conversation name, use it
         if (this.state.conversationName) {
           title = this.state.conversationName;
-        }
-
-        // If there is not a conversationName, gather relevant participant names and concatenate them together
-        else {
+        } else {
+          // If there is not a conversationName, gather relevant participant names and concatenate them together
           title = activeConversation.participants
-          .filter(user => user !== layerClient.user)
-          .map(user => user.displayName)
-          .join(', ');
+            .filter(user => user !== layerClient.user)
+            .map(user => user.displayName)
+            .join(", ");
         }
       }
-    }
-
-    // Else there is no conversation, prompt the user to select something
-    else {
-      title = '← Create a new conversation or select a conversation from the list.';
+    } else {
+      // Else there is no conversation, prompt the user to select something
+      title =
+        "← Create a new conversation or select a conversation from the list.";
     }
     return title;
   }
@@ -263,14 +312,14 @@ class Messenger extends Component {
   customizeConversationView() {
     return {
       composerButtonPanelRight: () => {
-        return (<div>
-          <SendButton />
-          <FileUploadButton multiple="true" />
-          <MenuButton
-          getMenuItems={this.generateMenu.bind(this)}
-          />
-        </div>);
-      },
+        return (
+          <div>
+            <SendButton />
+            <FileUploadButton multiple="true" />
+            <MenuButton getMenuItems={this.generateMenu.bind(this)} />
+          </div>
+        );
+      }
     };
   }
 
@@ -284,84 +333,106 @@ class Messenger extends Component {
    * This app uses a dialog to create and edit Conversation participants and Conversation names.
    */
   renderDialog() {
-    return <EditConversationDialog
-      conversationId={this.state.editConversationId}
-      onCancel={this.cancelCreateConversation}
-      onSave={this.onCreateConversation}
-    />;
+    return (
+      <EditConversationDialog
+        conversationId={this.state.editConversationId}
+        onCancel={this.cancelCreateConversation}
+        onSave={this.onCreateConversation}
+      />
+    );
   }
 
   /**
    * Render the left panel which contains the Conversation List and the Header over the list
-  */
+   */
   renderLeftPanel() {
-    const activeConversationId = this.state.conversationId ? 'layer:///conversations/' + this.state.conversationId : '';
+    const activeConversationId = this.state.conversationId
+      ? "layer:///conversations/" + this.state.conversationId
+      : "";
 
-    return <div className="left-panel">
-      <div className='panel-header conversations-header'>
-        <a href='#' onClick={this.logout} className='logout'>
-          <i className="icon fa fa-sign-out"></i>
-        </a>
-        <Presence
-          item={layerClient.user}
-          onPresenceClick={this.togglePresence} />
+    return (
+      <div className="left-panel">
+        <div className="panel-header conversations-header">
+          <a href="#" onClick={this.logout} className="logout">
+            <i className="icon fa fa-sign-out" />
+          </a>
+          <Presence
+            item={layerClient.user}
+            onPresenceClick={this.togglePresence}
+          />
 
-        <div className='title'>{layerClient.user ? layerClient.user.displayName : '************'}</div>
-        <a href='#' onClick={this.startCreateConversation}>
-          <i className="icon fa fa-pencil-square-o"></i>
-        </a>
+          <div className="title">
+            {layerClient.user ? layerClient.user.displayName : "************"}
+          </div>
+          <a href="#" onClick={this.startCreateConversation}>
+            <i className="icon fa fa-pencil-square-o" />
+          </a>
+        </div>
+
+        <ConversationList
+          selectedConversationId={
+            this.state.conversationId ? activeConversationId : null
+          }
+          onConversationSelected={e => this.onConversationSelected(e)}
+        />
       </div>
-
-      <ConversationList
-        selectedConversationId={this.state.conversationId ? activeConversationId : null}
-        onConversationSelected={(e) => this.onConversationSelected(e)} />
-    </div>;
+    );
   }
 
   /**
    * Render the right panel which consists of the Conversation View and the header over the Conversation View
    */
   renderRightPanel() {
-    const activeConversationId = this.state.conversationId ? 'layer:///conversations/' + this.state.conversationId : '';
+    const activeConversationId = this.state.conversationId
+      ? "layer:///conversations/" + this.state.conversationId
+      : "";
 
-    return <div className="right-panel">
-      <div className='panel-header conversation-header'>
-        <a href='#' onClick={this.onConversationDeselected}>
-          <i className="fa fa-arrow-left" aria-hidden="true"></i>
-        </a>
-        <div className='title'>{this.getTitle()}</div>
-        <a href='#' onClick={this.startEditConversation}>
-          <i className="icon fa fa-pencil-square-o"></i>
-        </a>
+    return (
+      <div className="right-panel">
+        <div className="panel-header conversation-header">
+          <a href="#" onClick={this.onConversationDeselected}>
+            <i className="fa fa-arrow-left" aria-hidden="true" />
+          </a>
+          <div className="title">{this.getTitle()}</div>
+          <a href="#" onClick={this.startEditConversation}>
+            <i className="icon fa fa-pencil-square-o" />
+          </a>
+        </div>
+
+        <ConversationView
+          ref="conversationPanel"
+          queryFilter={message => this.filterMessages(message)}
+          replaceableContent={this.customizeConversationView()}
+          onRenderListItem={dateSeparator}
+          conversationId={activeConversationId}
+        />
       </div>
-
-      <ConversationView
-        ref="conversationPanel"
-        queryFilter={(message) => this.filterMessages(message)}
-        replaceableContent={this.customizeConversationView()}
-        onRenderListItem={dateSeparator}
-        conversationId={activeConversationId}
-      />
-    </div>;
+    );
   }
 
   render() {
     // Setup the CSS Classes for the root element
-    const isMobile = navigator.userAgent.match(/android/i) || navigator.platform === 'iPhone' || navigator.platform === 'iPad';
-    let rootClasses = 'messenger';
-    if  (this.state.conversationId) rootClasses += ' has-conversation';
-    if (isMobile) rootClasses += ' is-mobile';
+    const isMobile =
+      navigator.userAgent.match(/android/i) ||
+      navigator.platform === "iPhone" ||
+      navigator.platform === "iPad";
+    let rootClasses = "messenger";
+    if (this.state.conversationId) rootClasses += " has-conversation";
+    if (isMobile) rootClasses += " is-mobile";
 
-    return <div className={rootClasses}>
-      <Notifier
-        notifyInForeground="toast"
-        onMessageNotification={this.onMessageNotification}
-        onNotificationClick={this.onNotificationClick} />
-      {this.state.showEditConversationDialog ? this.renderDialog() : null}
-      {this.renderLeftPanel()}
-      {this.renderRightPanel()}
-    </div>
+    return (
+      <div className={rootClasses}>
+        <Notifier
+          notifyInForeground="toast"
+          onMessageNotification={this.onMessageNotification}
+          onNotificationClick={this.onNotificationClick}
+        />
+        {this.state.showEditConversationDialog ? this.renderDialog() : null}
+        {this.renderLeftPanel()}
+        {this.renderRightPanel()}
+      </div>
+    );
   }
 }
 
-export default Messenger
+export default Messenger;
