@@ -14,6 +14,7 @@ import { layerClient, LayerReactComponents, Layer } from "../../get-layer";
 import EditConversationDialog from "./EditConversationDialog";
 import getMenuOptions from "./sample-menu";
 import "./message-handlers";
+import { customFileSelector } from '../../custom-message-types';
 
 const { dateSeparator } = Layer.UI.UIUtils;
 const { uuid, isMobile } = Layer.Utils;
@@ -348,36 +349,8 @@ class Messenger extends Component<Props, State> {
   }
 
   // Support use of the PDF Custom Message Type by detecting when the File Upload Widget receives a PDF file.
-  // TODO: This does not handle PDF files that are dragged and dropped into the Conversation View.
   filesSelected(evt) {
-    const files = evt.detail.files;
-    if (files.length === 1 && files[0].type === 'application/pdf') {
-      evt.preventDefault();
-      const PDFModel = Layer.Core.Client.getMessageTypeModelClass('PDFModel');
-
-      const model = new PDFModel({
-        source: files[0],
-        author: Layer.client.user.displayName,
-        title: files[0].name,
-      });
-      model.send({ conversation: this.state.conversation });
-      return;
-    }
-
-    if (files.length === 1 && (files[0].type === 'text/csv' || files[0].name.match(/\.csv$/))) {
-      evt.preventDefault();
-      const PieChartModel = Layer.Core.Client.getMessageTypeModelClass('PieChartModel');
-      const FileModel = Layer.Core.Client.getMessageTypeModelClass('FileModel');
-
-      var model = new PieChartModel({
-        title: "Eat Pie?",
-        fileModel: new FileModel({
-          source: files[0]
-        })
-      });
-      model.send({ conversation: this.state.conversation });
-      return;
-    }
+    customFileSelector(evt, this.state.conversation);
   }
 
   /**
@@ -454,7 +427,8 @@ class Messenger extends Component<Props, State> {
           ref="conversationPanel"
           queryFilter={message => this.filterMessages(message)}
           replaceableContent={this.customizeConversationView()}
-          onRenderListItem={dateSeparator}
+          // Uncomment this line to add date separators that render between messages sent on different dates
+          // onRenderListItem={dateSeparator}
           conversationId={activeConversationId}
         />
       </div>

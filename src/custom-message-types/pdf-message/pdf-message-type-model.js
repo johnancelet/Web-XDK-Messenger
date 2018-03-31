@@ -1,5 +1,5 @@
-import { Core } from '@layerhq/web-xdk';
-const { Client, MessagePart, Root, MessageTypeModel } = Core;
+import { Layer } from '../../get-layer'
+const { Root, MessagePart, MessageTypeModel, Client } = Layer.Core;
 
 class PDFModel extends MessageTypeModel {
   generateParts(callback) {
@@ -47,7 +47,7 @@ PDFModel.MIMEType = 'application/vnd.customco.pdf+json';
 
 PDFModel.defaultAction = 'vnd-open-pdf';
 
-Core.Root.initClass.apply(PDFModel, [PDFModel, 'PDFModel']);
+Root.initClass.apply(PDFModel, [PDFModel, 'PDFModel']);
 Client.registerMessageTypeModelClass(PDFModel, 'PDFModel');
 
 export default PDFModel;

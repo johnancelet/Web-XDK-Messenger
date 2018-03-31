@@ -1,4 +1,4 @@
-import Layer from '@layerhq/web-xdk';
+import { Layer } from '../../get-layer'
 import './pie-chart-message-type-model';
 
 const registerComponent = Layer.UI.registerComponent;

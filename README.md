@@ -40,3 +40,14 @@ However, note that if this app is **not** running at the root path of your web s
 
 1. Add an entry to your `package.json` file: `"homepage": "http://myco.com/mypath/toapp"`
 2. Edit your `App.js` file and update the `<BrowserRouter/>` to: `<BrowserRouter basename={'/mypath/toapp'}>`
+
+## Running with Custom Messages
+
+Some Custom Messages are included but disabled by default.  All code for custom messages can be seen in `src/custom-message-types`.  To enable this code, comment out the stub code at the top of `src/custom-message-types/index.js` and uncomment the rest of the file.
+
+Custom Messages currently are part of this sample app alone, and are not part of iOS or Android sample apps.
+
+Custom Messages can be sent by:
+
+1. Selecting `Create Custom Opinion Message` or `Create Custom Pie Chart Message` from the Create Message menu in the Compose Bar
+2. Using the File Upload button and selecting a PDF File

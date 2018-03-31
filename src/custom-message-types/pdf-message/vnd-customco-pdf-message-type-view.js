@@ -1,4 +1,4 @@
-import Layer from '@layerhq/web-xdk';
+import { Layer } from '../../get-layer'
 import './pdf-message-type-model';
 const registerComponent = Layer.UI.registerComponent;
 const MessageViewMixin = Layer.UI.mixins.MessageViewMixin;
@@ -16,11 +16,6 @@ registerComponent('vnd-customco-pdf-message-type-view', {
     width: 100%;
     height: 400px;
   }
-  layer-message-viewer.vnd-customco-pdf-message-type-view {
-    max-width: none !important;
-    width: 95% !important;
-    margin-right: 5px;
-  }
   `,
 
   properties: {
@@ -30,10 +25,6 @@ registerComponent('vnd-customco-pdf-message-type-view', {
     messageViewContainerTagName: {
       noGetterFromSetter: true,
       value: 'layer-standard-message-view-container'
-    },
-
-    hideMessageItemRightAndLeftContent: {
-      value: true,
     },
   },
   methods: {

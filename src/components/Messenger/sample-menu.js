@@ -1,5 +1,6 @@
 // @flow
 import { layerClient, LayerReactComponents, Layer } from '../../get-layer';
+import { getMenuOptions as CustomMenuItems } from '../../custom-message-types';
 
 function getMenuOptions(conversation: any) {
   return [
@@ -110,9 +111,10 @@ function getMenuOptions(conversation: any) {
                 {"text": "Kill Arthur", "id": "kill"},
                 {"text": "Give Holy Grail", "id": "grail"}
               ],
-              "data": {
-                "responseName": "deal-with-arthur",
-                "allowReselect": true
+              data: {
+                responseName: "deal-with-arthur",
+                allowReselect: true,
+                enabledFor: Layer.client.user.id,
               }
             }
           ],
@@ -178,9 +180,7 @@ function getMenuOptions(conversation: any) {
       method: function() {
         const ReceiptModel = Layer.Core.Client.getMessageTypeModelClass('ReceiptModel')
         const LocationModel = Layer.Core.Client.getMessageTypeModelClass('LocationModel')
-        const ListModel =   Layer.Core.Client.getMessageTypeModelClass('ListModel')
         const ProductModel =Layer.Core.Client.getMessageTypeModelClass('ProductModel')
-        const ImageModel =  Layer.Core.Client.getMessageTypeModelClass('ImageModel')
         const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
 
         const model = new ReceiptModel({
@@ -405,7 +405,7 @@ function getMenuOptions(conversation: any) {
       },
     },
     {
-      text: 'Create Feedback Message',
+      text: 'Create Feedback Message (web only)',
       method: function() {
         const FeedbackModel = Layer.Core.Client.getMessageTypeModelClass('FeedbackModel');
         const model = new FeedbackModel({
@@ -414,43 +414,7 @@ function getMenuOptions(conversation: any) {
         model.send({ conversation });
       },
     },
-    {
-      text: 'Create Custom Opinion Message',
-      method: function() {
-        const OpinionModel = Layer.Core.Client.getMessageTypeModelClass('OpinionModel');
-        const model = new OpinionModel({
-          comment: 'I love this stuff',
-          rating: 4,
-          description: 'Mary had a little lamb, little lamb, little lamb.  Mary had a little lamb, who made a tasty stew!',
-          author: 'Frodo the Dodo',
-        });
-        model.send({ conversation });
-      },
-    },
-    {
-      text: 'Create Custom Pie Chart Message',
-      method: function() {
-        const PieChartModel = Layer.Core.Client.getMessageTypeModelClass('PieChartModel');
-        const FileModel = Layer.Core.Client.getMessageTypeModelClass('FileModel');
-        const model = new PieChartModel({
-          title: 'Employee Salaries',
-          fileModel: new FileModel({
-            source: new Layer.Core.MessagePart({
-              body: `Employee Name, Salary
-Mike, 22500
-Bob, 35000
-Alice, 44000
-Frank, 27000
-Floyd, 92000
-Fritz, 18500`,
-              mimeType: 'text/csv'
-            })
-          })
-        });
-        model.send({ conversation });
-      }
-    }
-  ];
+  ].concat(CustomMenuItems(conversation));
 }
 
 export default getMenuOptions;

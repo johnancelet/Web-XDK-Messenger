@@ -1,5 +1,6 @@
-import { Core } from '@layerhq/web-xdk';
-const { Client, MessagePart, Root, MessageTypeModel } = Core;
+import { Layer } from '../../get-layer'
+
+const { Root, MessagePart, MessageTypeModel, Client } = Layer.Core;
 
 class PieChartModel extends MessageTypeModel {
   generateParts(callback) {
@@ -61,7 +62,7 @@ PieChartModel.messageRenderer = 'vnd-customco-pie-chart-message-type-view';
 // Static property defines the MIME Type that will be used when creating new Messages from this Model
 PieChartModel.MIMEType = 'application/vnd.customco.pie+json';
 
-Core.Root.initClass.apply(PieChartModel, [PieChartModel, 'PieChartModel']);
+Layer.Core.Root.initClass.apply(PieChartModel, [PieChartModel, 'PieChartModel']);
 Client.registerMessageTypeModelClass(PieChartModel, 'PieChartModel');
 
 MessagePart.TextualMimeTypes.push('text/csv');

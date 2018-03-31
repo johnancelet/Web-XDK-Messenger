@@ -1,5 +1,5 @@
-import { Core } from '@layerhq/web-xdk'
-const { Root, MessagePart, MessageTypeModel, Client } = Core;
+import { Layer } from '../../get-layer'
+const { Root, MessagePart, MessageTypeModel, Client } = Layer.Core;
 
 class OpinionModel extends MessageTypeModel {
   generateParts(callback) {
