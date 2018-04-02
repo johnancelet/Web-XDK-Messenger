@@ -17,7 +17,7 @@ import "./message-handlers";
 import { customFileSelector } from '../../custom-message-types';
 
 const { dateSeparator } = Layer.UI.UIUtils;
-const { uuid, isMobile } = Layer.Utils;
+const { uuid } = Layer.Utils;
 
 // Extract the Layer XDK UI Components that are to be used in this Project
 const {
@@ -439,7 +439,6 @@ class Messenger extends Component<Props, State> {
     // Setup the CSS Classes for the root element
     let rootClasses = 'messenger';
     if  (this.state.conversationId) rootClasses += ' has-conversation';
-    if (isMobile) rootClasses += ' is-mobile';
 
     return <div className={rootClasses}>
       <Notifier
