@@ -151,9 +151,9 @@ class Messenger extends Component<Props, State> {
    * Whenever a conversation is selected in the Conversation List, navigate to that Conversation.
    * This will cause `render` to be called, and the new Conversation ID to be passed to the Conversation View.
    */
-  onConversationSelected(e: any) {
-    if (!e.detail.item) return;
-    const conversation = e.detail.item.toObject();
+  onConversationSelected(evt: CustomEvent) {
+    if (!evt.detail.item) return;
+    const conversation = evt.detail.item.toObject();
     this.props.history.push(`/conversations/${uuid(conversation.id)}`);
   }
 
@@ -182,7 +182,7 @@ class Messenger extends Component<Props, State> {
       const newConversation = conversationId
         ? layerClient.getConversation(conversationId)
         : null;
-      if (this.conversation) this.state.conversation.off(null, null, this);
+      if (this.state.conversation) this.state.conversation.off(null, null, this);
       this.state.conversation = newConversation;
       this.setupConversation();
     }
@@ -349,8 +349,8 @@ class Messenger extends Component<Props, State> {
   }
 
   // Support use of the PDF Custom Message Type by detecting when the File Upload Widget receives a PDF file.
-  filesSelected(e: any) {
-    customFileSelector(e, this.state.conversation);
+  filesSelected(evt: CustomEvent) {
+    customFileSelector(evt, this.state.conversation);
   }
 
   /**
