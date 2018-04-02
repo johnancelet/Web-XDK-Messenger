@@ -349,8 +349,8 @@ class Messenger extends Component<Props, State> {
   }
 
   // Support use of the PDF Custom Message Type by detecting when the File Upload Widget receives a PDF file.
-  filesSelected(evt) {
-    customFileSelector(evt, this.state.conversation);
+  filesSelected(e: any) {
+    customFileSelector(e, this.state.conversation);
   }
 
   /**

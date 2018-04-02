@@ -4,7 +4,7 @@ import ReactDom from 'react-dom';
 
 import layerConfig from './LayerConfiguration.json';
 
-import Layer from '@layerhq/web-xdk/index';
+import Layer from '@layerhq/web-xdk';
 import '@layerhq/web-xdk/ui/adapters/react';
 import '@layerhq/web-xdk/ui/messages/status/layer-status-message-view';
 import '@layerhq/web-xdk/ui/messages/receipt/layer-receipt-message-view';
