@@ -382,6 +382,7 @@ class Messenger extends Component<Props, State> {
           </a>
           <Presence
             item={layerClient.user}
+            size="large"
             onPresenceClick={this.togglePresence}
           />
 

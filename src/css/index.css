@@ -41,7 +41,7 @@ body {
 
 @media (max-width: 600px) {
   .messenger {
-    flex-direction: column;
+    flex-direction: row;
   }
 }
 

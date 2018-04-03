@@ -22,10 +22,12 @@
 @media (max-width: 600px) {
   .left-panel {
     flex: 1;
+    max-width:none;
   }
 
   .right-panel {
     flex: 1;
+    max-width:none;
   }
 
   .messenger.has-conversation .left-panel {
