@@ -1,5 +1,6 @@
 // @flow
 import { layerClient, LayerReactComponents, Layer } from '../../get-layer';
+import { getMenuOptions as CustomMenuItems } from '../../custom-message-types';
 
 function getMenuOptions(conversation: any) {
   return [
@@ -110,9 +111,10 @@ function getMenuOptions(conversation: any) {
                 {"text": "Kill Arthur", "id": "kill"},
                 {"text": "Give Holy Grail", "id": "grail"}
               ],
-              "data": {
-                "responseName": "deal-with-arthur",
-                "allowReselect": true
+              data: {
+                responseName: "deal-with-arthur",
+                allowReselect: true,
+                enabledFor: Layer.client.user.id,
               }
             }
           ],
@@ -148,6 +150,7 @@ function getMenuOptions(conversation: any) {
              new ChoiceModel({
                label: 'RAM',
                type: 'label',
+               enabledFor: Layer.client.user.id,
                allowReselect: true,
                preselectedChoice: 'large',
                choices: [
@@ -159,6 +162,7 @@ function getMenuOptions(conversation: any) {
              new ChoiceModel({
                label: 'Color',
                type: 'label',
+               enabledFor: Layer.client.user.id,
                allowReselect: true,
                preselectedChoice: 'offwhite',
                choices: [
@@ -176,9 +180,7 @@ function getMenuOptions(conversation: any) {
       method: function() {
         const ReceiptModel = Layer.Core.Client.getMessageTypeModelClass('ReceiptModel')
         const LocationModel = Layer.Core.Client.getMessageTypeModelClass('LocationModel')
-        const ListModel =   Layer.Core.Client.getMessageTypeModelClass('ListModel')
         const ProductModel =Layer.Core.Client.getMessageTypeModelClass('ProductModel')
-        const ImageModel =  Layer.Core.Client.getMessageTypeModelClass('ImageModel')
         const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
 
         const model = new ReceiptModel({
@@ -215,6 +217,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Size',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: 'small',
                       choices: [
                         {text:  'Small', id: 'small'},
@@ -225,6 +228,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Color',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: 'white',
                       choices: [
                         {text:  'White', id: 'white'},
@@ -247,6 +251,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Size',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: '',
                       choices: [
                         {text:  'Small', id: 'small'},
@@ -257,6 +262,7 @@ function getMenuOptions(conversation: any) {
                     new ChoiceModel({
                       label: 'Color',
                       type: 'label',
+                      enabledFor: Layer.client.user.id,
                       preselectedChoice: 'gold',
                       choices: [
                         {text:  'White', id: 'white'},
@@ -279,6 +285,7 @@ function getMenuOptions(conversation: any) {
                   new ChoiceModel({
                     label: 'Size',
                     type: 'label',
+                    enabledFor: Layer.client.user.id,
                     preselectedChoice: 'medium',
                     choices: [
                       {text:  'Small', id: 'small'},
@@ -289,6 +296,7 @@ function getMenuOptions(conversation: any) {
                   new ChoiceModel({
                     label: 'Color',
                     type: 'label',
+                    enabledFor: Layer.client.user.id,
                     choices: [
                       {text:  'White', id: 'white'},
                       {text:  'Black', id: 'black'},
@@ -303,11 +311,48 @@ function getMenuOptions(conversation: any) {
       },
     },
     {
-      text: 'Create Choice Message',
+      text: 'Create Single Selection Choice Message',
       method: function() {
         const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
         const model = new ChoiceModel({
+          enabledFor: Layer.client.user.id,
           label: 'What is the airspeed velocity of an unladen swallow?',
+          responseName: 'airspeedselection',
+          choices: [
+             {text:  'Zero, it can not get off the ground!', id: 'zero'},
+             {text:  'Are we using Imperial or Metric units?', id: 'clever bastard'},
+             {text:  'What do you mean? African or European swallow?', id: 'just a smart ass'},
+           ],
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Changeable Selection Choice Message',
+      method: function() {
+        const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
+        const model = new ChoiceModel({
+          enabledFor: Layer.client.user.id,
+          label: 'What is the airspeed velocity of an unladen swallow?',
+          allowReselect: true,
+          responseName: 'airspeedselection',
+          choices: [
+             {text:  'Zero, it can not get off the ground!', id: 'zero'},
+             {text:  'Are we using Imperial or Metric units?', id: 'clever bastard'},
+             {text:  'What do you mean? African or European swallow?', id: 'just a smart ass'},
+           ],
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Multiselect Choice Message',
+      method: function() {
+        const ChoiceModel = Layer.Core.Client.getMessageTypeModelClass('ChoiceModel')
+        const model = new ChoiceModel({
+          enabledFor: Layer.client.user.id,
+          label: 'What is the airspeed velocity of an unladen swallow?',
+          allowMultiselect: true,
           responseName: 'airspeedselection',
           choices: [
              {text:  'Zero, it can not get off the ground!', id: 'zero'},
@@ -360,7 +405,7 @@ function getMenuOptions(conversation: any) {
       },
     },
     {
-      text: 'Create Feedback Message',
+      text: 'Create Feedback Message (web only)',
       method: function() {
         const FeedbackModel = Layer.Core.Client.getMessageTypeModelClass('FeedbackModel');
         const model = new FeedbackModel({
@@ -368,8 +413,8 @@ function getMenuOptions(conversation: any) {
         });
         model.send({ conversation });
       },
-    }
-  ];
+    },
+  ].concat(CustomMenuItems(conversation));
 }
 
 export default getMenuOptions;

@@ -14,6 +14,7 @@ import { layerClient, LayerReactComponents, Layer } from "../../get-layer";
 import EditConversationDialog from "./EditConversationDialog";
 import getMenuOptions from "./sample-menu";
 import "./message-handlers";
+import { customFileSelector } from '../../custom-message-types';
 
 const { dateSeparator } = Layer.UI.UIUtils;
 const { uuid } = Layer.Utils;
@@ -87,12 +88,27 @@ class Messenger extends Component<Props, State> {
     // If the Conversations Query has already fetched all conversations, then this will already be present.
     // Else getConversation(id, true) will fetch it from the server and trigger "conversations:loaded" event when complete.
     if (this.props.match.params.conversationId) {
-      this.state.conversation = layerClient.getConversation(
-        this.props.match.params.conversationId,
-        true
-      );
-      this.setupConversation();
+
+      if (layerClient.isReady) {
+        this.state.conversation = layerClient.getConversation(this.props.match.params.conversationId, true);
+        this.setupConversation();
+      } else {
+        layerClient.once('ready', () => {
+          this.state.conversation = layerClient.getConversation(this.props.match.params.conversationId, true);
+          this.setupConversation();
+        });
+      }
     }
+  }
+
+  // Handle reauthentication
+  componentDidMount() {
+    layerClient.on('challenge', e => {
+      this.props.history.push({
+        pathname: '/',
+        previousLocation: { pathname: this.props.location.pathname }
+      });
+    }, this)
   }
 
   /**
@@ -140,11 +156,11 @@ class Messenger extends Component<Props, State> {
 
   /**
    * Whenever a conversation is selected in the Conversation List, navigate to that Conversation.
-   * This will cause `render` to be called, and the new Conversation ID to be passed to the Conversatin View.
+   * This will cause `render` to be called, and the new Conversation ID to be passed to the Conversation View.
    */
-  onConversationSelected(e: any) {
-    if (!e.detail.item) return;
-    const conversation = e.detail.item.toObject();
+  onConversationSelected(evt: CustomEvent) {
+    if (!evt.detail.item) return;
+    const conversation = evt.detail.item.toObject();
     this.props.history.push(`/conversations/${uuid(conversation.id)}`);
   }
 
@@ -173,7 +189,7 @@ class Messenger extends Component<Props, State> {
       const newConversation = conversationId
         ? layerClient.getConversation(conversationId)
         : null;
-      if (this.conversation) this.state.conversation.off(null, null, this);
+      if (this.state.conversation) this.state.conversation.off(null, null, this);
       this.state.conversation = newConversation;
       this.setupConversation();
     }
@@ -186,6 +202,7 @@ class Messenger extends Component<Props, State> {
    * Just return `false` to prevent a message from rendering.
    */
   filterMessages(message: any) {
+
     const model = message.createModel();
     return (
       !model ||
@@ -319,14 +336,16 @@ class Messenger extends Component<Props, State> {
   customizeConversationView() {
     return {
       composerButtonPanelRight: () => {
-        return (
-          <div>
-            <SendButton />
-            <FileUploadButton multiple="true" />
-            <MenuButton getMenuItems={this.generateMenu.bind(this)} />
-          </div>
-        );
-      }
+        return (<div>
+          <SendButton />
+          <FileUploadButton
+            multiple="true"
+            onFilesSelected={this.filesSelected.bind(this)}/>
+          <MenuButton
+            getMenuItems={this.generateMenu.bind(this)}
+          />
+        </div>);
+      },
     };
   }
 
@@ -334,6 +353,11 @@ class Messenger extends Component<Props, State> {
     if (this.state.conversation) {
       return getMenuOptions(this.state.conversation);
     }
+  }
+
+  // Support use of the PDF Custom Message Type by detecting when the File Upload Widget receives a PDF file.
+  filesSelected(evt: CustomEvent) {
+    customFileSelector(evt, this.state.conversation);
   }
 
   /**
@@ -365,6 +389,7 @@ class Messenger extends Component<Props, State> {
           </a>
           <Presence
             item={layerClient.user}
+            size="large"
             onPresenceClick={this.togglePresence}
           />
 
@@ -410,7 +435,8 @@ class Messenger extends Component<Props, State> {
           ref="conversationPanel"
           queryFilter={message => this.filterMessages(message)}
           replaceableContent={this.customizeConversationView()}
-          onRenderListItem={dateSeparator}
+          // Uncomment this line to add date separators that render between messages sent on different dates
+          // onRenderListItem={dateSeparator}
           conversationId={activeConversationId}
         />
       </div>
@@ -419,26 +445,18 @@ class Messenger extends Component<Props, State> {
 
   render() {
     // Setup the CSS Classes for the root element
-    const isMobile =
-      navigator.userAgent.match(/android/i) ||
-      navigator.platform === "iPhone" ||
-      navigator.platform === "iPad";
-    let rootClasses = "messenger";
-    if (this.state.conversationId) rootClasses += " has-conversation";
-    if (isMobile) rootClasses += " is-mobile";
+    let rootClasses = 'messenger';
+    if  (this.state.conversationId) rootClasses += ' has-conversation';
 
-    return (
-      <div className={rootClasses}>
-        <Notifier
-          notifyInForeground="toast"
-          onMessageNotification={this.onMessageNotification}
-          onNotificationClick={this.onNotificationClick}
-        />
-        {this.state.showEditConversationDialog ? this.renderDialog() : null}
-        {this.renderLeftPanel()}
-        {this.renderRightPanel()}
-      </div>
-    );
+    return <div className={rootClasses}>
+      <Notifier
+        notifyInForeground="toast"
+        onMessageNotification={this.onMessageNotification}
+        onNotificationClick={this.onNotificationClick} />
+      {this.state.showEditConversationDialog ? this.renderDialog() : null}
+      {this.renderLeftPanel()}
+      {this.renderRightPanel()}
+    </div>
   }
 }
 

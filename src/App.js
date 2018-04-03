@@ -8,7 +8,6 @@ import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Login from './components/Login'
 import Messenger from './components/Messenger'
-import '@layerhq/web-xdk/themes/layer-basic-blue.css'
 
 type Props = {}
 

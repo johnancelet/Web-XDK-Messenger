@@ -39,8 +39,10 @@ body {
   align-items: stretch;
 }
 
-.messenger.is-mobile {
-  flex-direction: column;
+@media (max-width: 600px) {
+  .messenger {
+    flex-direction: row;
+  }
 }
 
 

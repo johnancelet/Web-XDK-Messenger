@@ -19,20 +19,24 @@
   flex: 3;
 }
 
-.is-mobile .left-panel {
-  flex: 1;
-}
+@media (max-width: 600px) {
+  .left-panel {
+    flex: 1;
+    max-width:none;
+  }
 
-.is-mobile .right-panel {
-  flex: 1;
-}
+  .right-panel {
+    flex: 1;
+    max-width:none;
+  }
 
-.has-conversation.is-mobile .left-panel {
-  display: none;
-}
+  .messenger.has-conversation .left-panel {
+    display: none;
+  }
 
-.is-mobile:not(.has-conversation) .right-panel {
-  display: none;
+  .messenger:not(.has-conversation) .right-panel {
+    display: none;
+  }
 }
 
 layer-conversation-list {
