@@ -5,6 +5,8 @@
  * * Select a title for the Conversation (optional)
  * * Select participants for the Conversation
  */
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faCheckSquare from '@fortawesome/fontawesome-free-solid/faCheckSquare';
 import * as React from 'react'
 import { LayerReactComponents, layerClient } from '../../get-layer';
 
@@ -135,7 +137,8 @@ class CreateConversationDialog extends React.Component<Props, State> {
               onChange={this.updateName}
               placeholder='Conversation title...' />
               <a href='#' onClick={this.onSave}>
-                <i className='icon fa fa-check-square'></i>
+              <FontAwesomeIcon icon={faCheckSquare} />
+
               </a>
           </div>
           <div className="panel-section-header">PARTICIPANTS</div>

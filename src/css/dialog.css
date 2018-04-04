@@ -81,13 +81,18 @@
   border-width: 0px;
 }
 
-.dialog .conversation-values i {
+.dialog .conversation-values svg {
   margin-right: 10px;
   font-size: 36px;
   color: rgba(0,0,0,0.5);
 }
 
-.dialog-dirty.dialog .conversation-values i {
+
+.dialog-dirty.dialog .conversation-values svg {
+  color: rgba(25, 165, 228, 0.8);
+}
+
+.dialog-dirty.dialog .conversation-values svg:hover {
   color: rgb(25, 165, 228);
 }
 

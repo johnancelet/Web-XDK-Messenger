@@ -5,6 +5,8 @@ import layer from '../../get-layer';
 import config from '../../LayerConfiguration.json'
 // @flow-enable
 import './login_style.css'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faSpinner from '@fortawesome/fontawesome-free-solid/faSpinner';
 
 const layerClient = layer.layerClient
 const Layer = layer.Layer
@@ -89,27 +91,30 @@ class Login extends React.Component<Props, State> {
 
     if (waiting) return;
     this.setState({ waiting: true });
-
-    Layer.Utils.xhr({
-      url: this.state.identityProviderUrl,
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      },
-      method: 'POST',
-      data: {
-        nonce: nonce,
-        email: email,
-        password: password
-      }
-    }, (res) => {
-      this.setState({ waiting: false });
-      if (res.success && res.data.identity_token && this.state.cb) {
-        this.state.cb(res.data.identity_token)
-      } else {
-        alert('Login failed; please check your user id and password');
-      }
-    });
+    setTimeout(() => {
+      Layer.Utils.xhr({
+        url: this.state.identityProviderUrl,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        },
+        method: 'POST',
+        data: {
+          nonce: nonce,
+          email: email,
+          password: password
+        }
+      }, (res) => {
+        this.setState({ waiting: false });
+        setTimeout(() => {
+          if (res.success && res.data.identity_token && this.state.cb) {
+            this.state.cb(res.data.identity_token)
+          } else {
+            alert('Login failed; please check your user id and password');
+          }
+        }, 1000);
+      })
+    }, 5000);
   }
 
   setTrustedState = (isTrusted: boolean) => {
@@ -141,7 +146,7 @@ class Login extends React.Component<Props, State> {
         <label htmlFor="trusted">Is Trusted Device</label>
       </div>
       <button type="button" value="Submit" onClick={() => this.getIdentityToken()}>
-        {this.state.waiting ? <i className='fa fa-spinner fa-spin fa-3x fa-fw'></i> : null}
+        {this.state.waiting ? <FontAwesomeIcon icon={faSpinner} spin/> : null}
         <span>Login</span>
       </button>
     </form>
