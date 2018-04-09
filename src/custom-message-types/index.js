@@ -5,6 +5,7 @@ export { getMenuOptions, customFileSelector };
 /* UNCOMMENT THIS TO ENABLE CUSTOM MESSAGE TYPES
 import { Layer } from '../get-layer';
 import './opinion-message/vnd-customco-opinion-message-type-view';
+import './opinion-react-message/vnd-customco-opinion-react-message-type-view';
 import './pdf-message/vnd-customco-pdf-message-type-view';
 import './pie-chart-message/vnd-customco-pie-chart-message-type-view';
 
@@ -14,6 +15,19 @@ function getMenuOptions(conversation: any) {
       text: 'Create Custom Opinion Message (web only)',
       method: function() {
         const OpinionModel = Layer.Core.Client.getMessageTypeModelClass('OpinionModel');
+        const model = new OpinionModel({
+          comment: 'I love this stuff',
+          rating: 4,
+          description: 'Mary had a little lamb, little lamb, little lamb.  Mary had a little lamb, who made a tasty stew!',
+          author: 'Frodo the Dodo',
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Custom React Opinion Message (web only)',
+      method: function() {
+        const OpinionModel = Layer.Core.Client.getMessageTypeModelClass('OpinionReactModel');
         const model = new OpinionModel({
           comment: 'I love this stuff',
           rating: 4,

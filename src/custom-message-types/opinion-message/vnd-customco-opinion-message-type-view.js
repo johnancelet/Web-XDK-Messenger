@@ -19,7 +19,9 @@ registerComponent('vnd-customco-opinion-message-type-view', {
       width: 100%;
     }
     vnd-customco-opinion-message-type-view .user-comment {
-      min-height: 40px;
+      line-height: 40px;
+      white-space: nowrap;
+      overflow: hidden;
       text-align: center;
       flex-grow: 1;
       width: 100px /* Flexbox bug workaround */
