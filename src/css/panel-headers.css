@@ -17,17 +17,16 @@
   flex-grow: 1;
   text-align: center;
 }
+
 .panel-header a {
-  color: rgba(0,0,0,0.5);
-}
-.panel-header .icon {
   cursor: pointer;
   font-size: 18px;
   padding: 6px 4px 4px 6px;
   margin-left: 6px;
+  color: #eee;
+}
+.panel-header a:hover {
   color: #fff;
-  border: 1px solid rgba(255,255,255,.4);
-  border-radius: 6px;
 }
 .conversations-header {
   color: rgb(255, 255, 255);
@@ -39,9 +38,12 @@
 .conversations-header .title {
   text-align: left;
 }
-.conversation-header .icon {
+.conversation-header a {
   color: rgba(0,0,0,0.5);
-  border-color: rgba(0,0,0,0.5);
+}
+
+.conversation-header a:hover {
+  color: rgba(0,0,0,0.7);
 }
 
 

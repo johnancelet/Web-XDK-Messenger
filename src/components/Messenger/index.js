@@ -7,6 +7,12 @@
  * It also uses an Identity List via the EditCOnversationDialog.js file to create new Conversations.
  */
 
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faEdit from '@fortawesome/fontawesome-free-solid/faEdit';
+import faArrowLeft from '@fortawesome/fontawesome-free-solid/faArrowLeft';
+import faSignOutAlt from '@fortawesome/fontawesome-free-solid/faSignOutAlt';
+
+
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
@@ -385,7 +391,8 @@ class Messenger extends Component<Props, State> {
       <div className="left-panel">
         <div className="panel-header conversations-header">
           <a href="#" onClick={this.logout} className="logout">
-            <i className="icon fa fa-sign-out" />
+          <FontAwesomeIcon icon={faSignOutAlt} />
+            <i className="icon fas fa-sign-out-alt" />
           </a>
           <Presence
             item={layerClient.user}
@@ -397,7 +404,7 @@ class Messenger extends Component<Props, State> {
             {layerClient.user ? layerClient.user.displayName : "************"}
           </div>
           <a href="#" onClick={this.startCreateConversation}>
-            <i className="icon fa fa-pencil-square-o" />
+          <FontAwesomeIcon icon={faEdit} />
           </a>
         </div>
 
@@ -423,11 +430,11 @@ class Messenger extends Component<Props, State> {
       <div className="right-panel">
         <div className="panel-header conversation-header">
           <a href="#" onClick={this.onConversationDeselected}>
-            <i className="fa fa-arrow-left" aria-hidden="true" />
+          <FontAwesomeIcon icon={faArrowLeft} />
           </a>
           <div className="title">{this.getTitle()}</div>
           <a href="#" onClick={this.startEditConversation}>
-            <i className="icon fa fa-pencil-square-o" />
+          <FontAwesomeIcon icon={faEdit} />
           </a>
         </div>
 

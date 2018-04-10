@@ -5,6 +5,8 @@ import layer from '../../get-layer';
 import config from '../../LayerConfiguration.json'
 // @flow-enable
 import './login_style.css'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faSpinner from '@fortawesome/fontawesome-free-solid/faSpinner';
 
 const layerClient = layer.layerClient
 const Layer = layer.Layer
@@ -89,7 +91,6 @@ class Login extends React.Component<Props, State> {
 
     if (waiting) return;
     this.setState({ waiting: true });
-
     Layer.Utils.xhr({
       url: this.state.identityProviderUrl,
       headers: {
@@ -141,7 +142,7 @@ class Login extends React.Component<Props, State> {
         <label htmlFor="trusted">Is Trusted Device</label>
       </div>
       <button type="button" value="Submit" onClick={() => this.getIdentityToken()}>
-        {this.state.waiting ? <i className='fa fa-spinner fa-spin fa-3x fa-fw'></i> : null}
+        {this.state.waiting ? <FontAwesomeIcon icon={faSpinner} spin/> : null}
         <span>Login</span>
       </button>
     </form>

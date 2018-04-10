@@ -21,6 +21,14 @@ import '@layerhq/web-xdk/ui/components/layer-notifier';
 import '@layerhq/web-xdk/ui/components/layer-conversation-list';
 import '@layerhq/web-xdk/ui/components/layer-identity-list';
 
+
+/**
+ * VERSIONING:
+ *
+ * For backwards compatability for `WebXDK 1.0.0-pre` apps, include the following:
+ */
+// import '@layerhq/web-xdk/core/models/message-type-response-summary/message-type-response-summmary-v1';
+
 /**
  * PERSISTENCE:
  *
