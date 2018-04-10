@@ -91,7 +91,6 @@ class Login extends React.Component<Props, State> {
 
     if (waiting) return;
     this.setState({ waiting: true });
-    setTimeout(() => {
       Layer.Utils.xhr({
         url: this.state.identityProviderUrl,
         headers: {
@@ -106,15 +105,12 @@ class Login extends React.Component<Props, State> {
         }
       }, (res) => {
         this.setState({ waiting: false });
-        setTimeout(() => {
-          if (res.success && res.data.identity_token && this.state.cb) {
-            this.state.cb(res.data.identity_token)
-          } else {
-            alert('Login failed; please check your user id and password');
-          }
-        }, 1000);
+        if (res.success && res.data.identity_token && this.state.cb) {
+          this.state.cb(res.data.identity_token)
+        } else {
+          alert('Login failed; please check your user id and password');
+        }
       })
-    }, 5000);
   }
 
   setTrustedState = (isTrusted: boolean) => {
