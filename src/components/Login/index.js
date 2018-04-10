@@ -110,7 +110,7 @@ class Login extends React.Component<Props, State> {
       } else {
         alert('Login failed; please check your user id and password');
       }
-    })
+    });
   }
 
   setTrustedState = (isTrusted: boolean) => {
