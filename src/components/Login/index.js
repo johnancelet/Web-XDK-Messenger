@@ -91,26 +91,26 @@ class Login extends React.Component<Props, State> {
 
     if (waiting) return;
     this.setState({ waiting: true });
-      Layer.Utils.xhr({
-        url: this.state.identityProviderUrl,
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json'
-        },
-        method: 'POST',
-        data: {
-          nonce: nonce,
-          email: email,
-          password: password
-        }
-      }, (res) => {
-        this.setState({ waiting: false });
-        if (res.success && res.data.identity_token && this.state.cb) {
-          this.state.cb(res.data.identity_token)
-        } else {
-          alert('Login failed; please check your user id and password');
-        }
-      })
+    Layer.Utils.xhr({
+      url: this.state.identityProviderUrl,
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json'
+      },
+      method: 'POST',
+      data: {
+        nonce: nonce,
+        email: email,
+        password: password
+      }
+    }, (res) => {
+      this.setState({ waiting: false });
+      if (res.success && res.data.identity_token && this.state.cb) {
+        this.state.cb(res.data.identity_token)
+      } else {
+        alert('Login failed; please check your user id and password');
+      }
+    })
   }
 
   setTrustedState = (isTrusted: boolean) => {
