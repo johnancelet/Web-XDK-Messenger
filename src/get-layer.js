@@ -25,7 +25,7 @@ import '@layerhq/web-xdk/ui/components/layer-identity-list';
 /**
  * VERSIONING:
  *
- * For backwards compatability for older model types, include the following:
+ * For backwards compatability for `WebXDK 1.0.0-pre` apps, include the following:
  */
 // import '@layerhq/web-xdk/core/models/message-type-response-summary/message-type-response-summmary-v1';
 
