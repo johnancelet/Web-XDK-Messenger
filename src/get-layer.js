@@ -62,9 +62,13 @@ import '@layerhq/web-xdk/themes/layer-basic-blue.css'
  * * `isPersistenceEnabled` can be left out of typical apps. Most web applications should
  *   treat persisting of data as a security hazard. An example of an exception to this
  *   is a Cordova app installed on a phone.
+ *
+ * *Note*: The `google_maps_key` is not (by default) in your LayerConfiguration.json file and can
+ * be added there if using Location Messages (or may be acquired through other configurations)
  */
 const layerClient = Layer.init({
   appId: layerConfig[0].app_id,
+  googleMapsKey: layerConfig[0].google_maps_key,
   isPersistenceEnabled: false,
 });
 

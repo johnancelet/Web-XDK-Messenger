@@ -11,8 +11,6 @@ import faSpinner from '@fortawesome/fontawesome-free-solid/faSpinner';
 const layerClient = layer.layerClient
 const Layer = layer.Layer
 
-window.googleMapsAPIKey = config[0].google_maps_key;
-
 type Props = {
   history: any,
   location: any
