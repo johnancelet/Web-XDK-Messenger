@@ -409,7 +409,7 @@ function getMenuOptions(conversation: any) {
       method: function() {
         const FeedbackModel = Layer.Core.Client.getMessageTypeModelClass('FeedbackModel');
         const model = new FeedbackModel({
-          enabledFor: [layerClient.user.id],
+          enabledFor: layerClient.user.id,
         });
         model.send({ conversation });
       },
