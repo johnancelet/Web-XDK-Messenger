@@ -6,7 +6,7 @@
     "@fortawesome/fontawesome": "^1.1.5",
     "@fortawesome/fontawesome-free-solid": "^5.0.9",
     "@fortawesome/react-fontawesome": "0.0.18",
-    "@layerhq/web-xdk": "^4.0.2",
+    "@layerhq/web-xdk-prerelease": "^4.1.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
