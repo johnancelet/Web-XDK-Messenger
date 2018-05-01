@@ -58,7 +58,7 @@ function getMenuOptions(conversation: any) {
     {
       text: 'Create Location Message',
       method: function() {
-        if (!window.googleMapsAPIKey) {
+        if (!layerClient.googleMapsKey) {
           alert('Please add a Google Maps API Key to your LayerConfiguration.json file using the key name "google_maps_key"');
         } else {
           const LocationModel = Layer.Core.Client.getMessageTypeModelClass('LocationModel');
