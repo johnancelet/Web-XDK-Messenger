@@ -5,22 +5,22 @@ import ReactDom from 'react-dom';
 import layerConfig from './LayerConfiguration.json';
 
 import Layer from '@layerhq/web-xdk-prerelease';
+
 import '@layerhq/web-xdk-prerelease/ui/adapters/react';
-import '@layerhq/web-xdk-prerelease/ui/messages/status/layer-status-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/receipt/layer-receipt-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/choice/layer-choice-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/carousel/layer-carousel-message-view';
-import '@layerhq/web-xdk-prerelease/ui/messages/buttons/layer-buttons-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/file/layer-file-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/location/layer-location-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/product/layer-product-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/feedback/layer-feedback-message-view';
+import '@layerhq/web-xdk-prerelease/ui/messages/audio/layer-audio-message-view';
+import '@layerhq/web-xdk-prerelease/ui/messages/video/layer-video-message-view';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-send-button';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-file-upload-button';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-notifier';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-conversation-list';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-identity-list';
-
 
 /**
  * VERSIONING:
