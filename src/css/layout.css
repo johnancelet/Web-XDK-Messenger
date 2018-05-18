@@ -2,7 +2,6 @@
 .left-panel,
 .right-panel {
   display: flex;
-  height: 100%;
   flex-direction: column;
   overflow: hidden;
 }
