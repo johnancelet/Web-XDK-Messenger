@@ -1,8 +1,8 @@
-function getMenuOptions() { return []; }
+/*function getMenuOptions() { return []; }
 function customFileSelector() {}
 export { getMenuOptions, customFileSelector };
-
-/* UNCOMMENT THIS TO ENABLE CUSTOM MESSAGE TYPES
+*/
+/* UNCOMMENT THIS TO ENABLE CUSTOM MESSAGE TYPES */
 import { Layer } from '../get-layer';
 import './opinion-message/vnd-customco-opinion-message-type-view';
 import './opinion-react-message/vnd-customco-opinion-react-message-type-view';
@@ -86,4 +86,3 @@ function customFileSelector(evt, conversation) {
 }
 
 export { getMenuOptions, customFileSelector };
-*/

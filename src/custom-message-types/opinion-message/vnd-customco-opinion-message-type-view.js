@@ -4,7 +4,6 @@ import './opinion-message-type-model';
 const registerComponent = Layer.UI.registerComponent;
 const MessageViewMixin = Layer.UI.mixins.MessageViewMixin;
 const processText = Layer.UI.handlers.text.processText;
-const Widths = Layer.UI.Constants.WIDTH;
 
 registerComponent('vnd-customco-opinion-message-type-view', {
   mixins: [MessageViewMixin],
@@ -56,8 +55,8 @@ registerComponent('vnd-customco-opinion-message-type-view', {
   `,
 
   properties: {
-    widthType: {
-      value: Widths.FLEX
+    maxWidth: {
+      value: 400
     },
     messageViewContainerTagName: {
       noGetterFromSetter: true,

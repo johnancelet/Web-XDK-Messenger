@@ -3,7 +3,6 @@ import './pie-chart-message-type-model';
 
 const registerComponent = Layer.UI.registerComponent;
 const MessageViewMixin = Layer.UI.mixins.MessageViewMixin;
-const Widths = Layer.UI.Constants.WIDTH;
 
 // Insure that the google charting library is loaded
 const script = document.createElement('script');
@@ -21,7 +20,6 @@ registerComponent('vnd-customco-pie-chart-message-type-view', {
   // Every UI Component must define an initial display style
   style: `vnd-customco-pie-chart-message-type-view {
     display: block;
-    height: 250px;
   }
   vnd-customco-pie-chart-message-type-view .vnd-customco-pie {
     height: 100%;
@@ -37,12 +35,12 @@ registerComponent('vnd-customco-pie-chart-message-type-view', {
   `,
 
   properties: {
-
-    // Fill out to use available width
-    widthType: {
-      value: Widths.FULL
+    height: {
+      value: 250,
     },
-
+    minWidth: {
+      value: 350
+    },
     // Wrap this UI in a Titled Message View Container
     messageViewContainerTagName: {
       noGetterFromSetter: true,

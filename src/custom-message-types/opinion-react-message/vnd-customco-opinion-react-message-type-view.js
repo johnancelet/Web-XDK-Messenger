@@ -6,8 +6,6 @@ import './opinion-react-message-type-model';
 
 const registerComponent = Layer.UI.registerComponent;
 const MessageViewMixin = Layer.UI.mixins.MessageViewMixin;
-const Widths = Layer.UI.Constants.WIDTH;
-
 
 class Opinion extends Component<Props, State> {
   constructor(props) {
@@ -75,9 +73,7 @@ registerComponent('vnd-customco-opinion-react-message-type-view', {
   `,
 
   properties: {
-    widthType: {
-      value: Widths.FLEX
-    },
+
     messageViewContainerTagName: {
       noGetterFromSetter: true,
       value: 'layer-standard-message-view-container'

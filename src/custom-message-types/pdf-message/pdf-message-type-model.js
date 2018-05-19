@@ -41,11 +41,11 @@ PDFModel.prototype.title = '';
 
 // Static property specifies the preferred Message Type View for representing this Model
 PDFModel.messageRenderer = 'vnd-customco-pdf-message-type-view';
+PDFModel.largeMessageRenderer = 'vnd-customco-pdf-message-type-large-view';
+PDFModel.defaultAction = 'layer-show-large-message';
 
 // Static property defines the MIME Type that will be used when creating new Messages from this Model
 PDFModel.MIMEType = 'application/vnd.customco.pdf+json';
-
-PDFModel.defaultAction = 'vnd-open-pdf';
 
 Root.initClass.apply(PDFModel, [PDFModel, 'PDFModel']);
 Client.registerMessageTypeModelClass(PDFModel, 'PDFModel');
