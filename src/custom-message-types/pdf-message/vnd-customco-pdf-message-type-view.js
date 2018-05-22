@@ -18,16 +18,24 @@ registerComponent('vnd-customco-pdf-message-type-view', {
     width: 100%;
     position: relative;
   }
-  vnd-customco-pdf-message-type-view .pdf-message-cover {
+  /* Prevent clicks from interacting with the PDF document in the Standard Message View */
+   vnd-customco-pdf-message-type-view .pdf-message-cover {
     position: absolute;
     width: 100%;
     height: 100%;
-    opacity: 0.2;
+    opacity: 0.02;
     background-color: black;
   }
   /* Dumbass hack to hide the PDF Viewer scrollbar */
   vnd-customco-pdf-message-type-view object {
     width: 105%;
+  }
+  layer-message-viewer.vnd-customco-pdf-message-type-view .pdf-checkmark {
+    opacity: 0.1;
+    margin-right: 20px;
+  }
+  layer-message-viewer.vnd-customco-pdf-message-type-view .pdf-checkmark.pdf-signed {
+    opacity: 1.0;
   }
   `,
 
@@ -41,15 +49,22 @@ registerComponent('vnd-customco-pdf-message-type-view', {
     },
   },
   methods: {
+    onAfterCreate() {
+      this.nodes.checkmark = document.createElement('div');
+      this.nodes.checkmark.innerHTML = '✅';
+      this.nodes.checkmark.classList.add('pdf-checkmark');
+
+      // Pass the dom node to the Standard Message Container's customControls property
+      this.parentComponent.customControls = this.nodes.checkmark;
+    },
     onRender() {
-      if (this.model.source.url) {
-        this.nodes.pdf.data = this.model.source.url;
-        this.nodes.fallback.href = this.model.source.url;
-      } else {
-        this.model.source.fetchStream(this.onRender.bind(this));
-      }
+      this.model.source.fetchStream((url) => {
+        this.nodes.pdf.data = url;
+        this.nodes.fallback.href = url;
+      });
     },
     onRerender() {
+      this.nodes.checkmark.classList.toggle('pdf-signed', Boolean(this.model.signature));
     },
   }
 });
