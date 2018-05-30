@@ -79,6 +79,7 @@ function customFileSelector(evt, conversation) {
       source: files[0],
       author: Layer.client.user.displayName,
       title: files[0].name,
+      signatureEnabledFor: Layer.client.user.id,
     });
     model.send({ conversation });
     return;

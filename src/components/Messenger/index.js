@@ -439,6 +439,10 @@ class Messenger extends Component<Props, State> {
         </div>
 
         <ConversationView
+          rightMarginWithAvatar="52"
+          leftMarginWithAvatar="52"
+          rightMarginWithoutAvatar="12"
+          leftMarginWithoutAvatar="12"
           ref="conversationPanel"
           queryFilter={message => this.filterMessages(message)}
           replaceableContent={this.customizeConversationView()}

@@ -58,7 +58,7 @@ function getMenuOptions(conversation: any) {
     {
       text: 'Create Location Message',
       method: function() {
-        if (!layerClient.googleMapsKey) {
+        if (!Layer.Settings.googleMapsKey) {
           alert('Please add a Google Maps API Key to your LayerConfiguration.json file using the key name "google_maps_key"');
         } else {
           const LocationModel = Layer.Core.Client.getMessageTypeModelClass('LocationModel');
@@ -405,11 +405,50 @@ function getMenuOptions(conversation: any) {
       },
     },
     {
-      text: 'Create Feedback Message (web only)',
+      text: 'Create Feedback Message',
       method: function() {
         const FeedbackModel = Layer.Core.Client.getMessageTypeModelClass('FeedbackModel');
         const model = new FeedbackModel({
           enabledFor: layerClient.user.id,
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Audio Message',
+      method: function() {
+        const AudioModel = Layer.Core.Client.getMessageTypeModelClass('AudioModel');
+        const model = new AudioModel({
+          sourceUrl: "http://www.mpgedit.org/mpgedit/testdata/mpeg1/layer3/compl.mp3",
+          previewUrl: "https://is3-ssl.mzstatic.com/image/thumb/Music6/v4/be/44/89/be4489a2-4562-a8c9-97dc-500ea98081cb/audiomachine17.jpg/600x600bf.jpg",
+          previewWidth: 600,
+          previewHeight: 600,
+          title: "Sample mp3",
+          artist: "Artist Foo",
+          mimeType: "audio/mpeg",
+          duration: 12345678,
+        });
+        model.send({ conversation });
+      },
+    },
+    {
+      text: 'Create Video Message',
+      method: function() {
+        const VideoModel = Layer.Core.Client.getMessageTypeModelClass('VideoModel');
+        const model = new VideoModel({
+          sourceUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+          previewUrl: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
+          title: "Elephant Dream",
+          subtitle: "By Blender Foundation",
+          artist: "Ton Roosendaal",
+          mimeType: "audio/mpeg",
+          duration: 653.804263,
+          size: 60000,
+          createdAt: new Date(),
+          previewWidth: 480,
+          previewHeight: 360,
+          width: 1280,
+          height: 720,
         });
         model.send({ conversation });
       },

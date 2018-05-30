@@ -58,12 +58,10 @@ registerComponent('vnd-customco-pdf-message-type-large-view', {
       this.nodes.button.addEventListener('click', this.handleSendEvent.bind(this));
     },
     onRender() {
-      if (this.model.source.url) {
-        this.nodes.pdf.data = this.model.source.url;
-        this.nodes.fallback.href = this.model.source.url;
-      } else {
-        this.model.source.fetchStream(this.onRender.bind(this));
-      }
+      this.model.getSourceUrl((url) => {
+        this.nodes.pdf.data = url;
+        this.nodes.fallback.href = url;
+      });
       if (this.model.signatureEnabledFor !== Layer.client.user.id) {
         this.classList.add('signature-disabled');
       }

@@ -58,7 +58,7 @@ registerComponent('vnd-customco-pdf-message-type-view', {
       this.parentComponent.customControls = this.nodes.checkmark;
     },
     onRender() {
-      this.model.source.fetchStream((url) => {
+      this.model.getSourceUrl((url) => {
         this.nodes.pdf.data = url;
         this.nodes.fallback.href = url;
       });

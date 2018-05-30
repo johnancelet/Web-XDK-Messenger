@@ -3,32 +3,26 @@ const { Root, MessagePart, MessageTypeModel, Client } = Layer.Core;
 
 class PDFModel extends MessageTypeModel {
   generateParts(callback) {
-    const body = this.initBodyWithMetadata(['title', 'author', 'signatureEnabledFor']);
+    super.generateParts(callback);
+    const body = this.initBodyWithMetadata(['title', 'size', 'sourceUrl', 'author', 'signatureEnabledFor']);
 
     this.part = new MessagePart({
       mimeType: this.constructor.MIMEType,
       body: JSON.stringify(body),
     });
 
-    // Replace the File/Blob source property with a proper MessagePart property.
-    this.source = new MessagePart(this.source);
-
-    // Setup this Message Part to be a Child Message Part within the Message Part Tree
-    this.addChildPart(this.source, 'source');
-
-    callback([this.part, this.source]);
+    callback([this.part].concat(this.childParts));
   }
 
-  parseModelChildParts({ changes, isEdit }) {
-    super.parseModelChildParts({ changes, isEdit });
-
-    // Setup this.source to refer to the MessagePart whose role=source
-    this.source = this.childParts.filter(part => part.role === 'source')[0];
+  getTitle() {
+    return this.title || ''
   }
-
-  getTitle() { return this.title || '' }
-  getDescription() { return ''; }
-  getFooter() { return this.author || ''; }
+  getDescription() {
+    return this.author || '';
+  }
+  getFooter() {
+    return Layer.UI.UIUtils.humanFileSize(this.size);
+  }
 
   getOneLineSummary() {
     return this.title || 'PDF File';
@@ -69,12 +63,19 @@ class PDFModel extends MessageTypeModel {
   }
 }
 
-PDFModel.prototype.source = null;
 PDFModel.prototype.author = '';
 PDFModel.prototype.title = '';
 
 PDFModel.prototype.signature = '';
 PDFModel.prototype.signatureEnabledFor = '';
+
+MessageTypeModel.DefineFileBehaviors({
+  classDef: PDFModel,
+  propertyName: 'source',
+  sizeProperty: 'size',
+  nameProperty: 'title',
+  roleName: 'source',
+});
 
 // Static property specifies the preferred Message Type View for representing this Model
 PDFModel.messageRenderer = 'vnd-customco-pdf-message-type-view';
