@@ -16,6 +16,8 @@ import '@layerhq/web-xdk-prerelease/ui/messages/product/layer-product-message-vi
 import '@layerhq/web-xdk-prerelease/ui/messages/feedback/layer-feedback-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/audio/layer-audio-message-view';
 import '@layerhq/web-xdk-prerelease/ui/messages/video/layer-video-message-view';
+import '@layerhq/web-xdk-prerelease/ui/messages/call/layer-call-message-view';
+import '@layerhq/web-xdk-prerelease/ui/messages/call/sample-provider/layer-sample-call-provider-message-view';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-send-button';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-file-upload-button';
 import '@layerhq/web-xdk-prerelease/ui/components/layer-notifier';
@@ -70,7 +72,9 @@ const layerClient = Layer.init({
   appId: layerConfig[0].app_id,
   googleMapsKey: layerConfig[0].google_maps_key,
   isPersistenceEnabled: false,
+  //logLevel: Layer.Constants.LOG.INFO,
 });
+layerClient.on('challenge', function() {debugger;});
 
 const LayerReactComponents = Layer.UI.adapters.react(React, ReactDom);
 
@@ -94,3 +98,14 @@ layerClient.on('analytics', (evt) => {
   }
 });
 */
+
+// Define the component:
+Layer.UI.registerComponent('tag-name', {});
+
+// Register the component as a message handler:
+Layer.UI.handlers.message.register({
+    tagName: 'tag-name',
+     handlesMessage: function(message, container) {
+       return message.filterParts(part => part.mimeType === "application/tag-name").length;
+    }
+});
