@@ -453,19 +453,6 @@ function getMenuOptions(conversation: any) {
         model.send({ conversation });
       },
     },
-    {
-      text: 'Create Call Message',
-      method: function() {
-        const CallModel = Layer.Core.Client.getMessageTypeModelClass('CallModel');
-        const ProviderModel = Layer.Core.Client.getMessageTypeModelClass('SampleCallProviderModel');
-
-        const model = new CallModel({
-          type: 'video',
-          providerModel: new ProviderModel(),
-        });
-        model.send({ conversation });
-      },
-    },
   ].concat(CustomMenuItems(conversation));
 }
 
