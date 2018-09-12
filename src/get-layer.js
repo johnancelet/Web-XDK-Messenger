@@ -62,6 +62,7 @@ const layerClient = Layer.init({
   appId: layerConfig[0].app_id,
   googleMapsKey: layerConfig[0].google_maps_key,
   isPersistenceEnabled: false,
+  //logLevel: Layer.Constants.LOG.INFO,
 });
 
 const LayerReactComponents = Layer.UI.adapters.react(React, ReactDom);
@@ -70,6 +71,22 @@ export { LayerReactComponents };
 export { Layer };
 export { layerClient }
 export default { Layer, LayerReactComponents, layerClient };
+
+/*
+layerClient.on('analytics', (evt) => {
+  switch (evt.type) {
+    case 'message-viewed':
+      console.log(`Message ${evt.message.id} and its ${evt.modelName} were seen in the ${evt.inBackground ? 'background': 'foreground'} and was${evt.wasUnread ? '' : ' already '}marked as read`);
+      break;
+    case 'message-selected':
+      console.log(`Message ${evt.message.id} clicked and its ${evt.modelName} triggered ${evt.actionEvent}`);
+      break;
+    case 'carousel-scrolled':
+      console.log(`Carousel Message ${evt.message.id} now showing ${evt.newItems.map(item => item.model.getModelName() + ': ' + item.part.id).join(', ')}`);
+      break;
+  }
+});
+*/
 
 // Define the component:
 Layer.UI.registerComponent('tag-name', {});
