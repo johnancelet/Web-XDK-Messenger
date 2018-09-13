@@ -74,13 +74,6 @@ class Messenger extends Component<Props, State> {
    * would you send users to a Login page.  But... this is a Demo.
    */
   componentWillMount() {
-    layerClient.on('challenge', e => {
-      this.props.history.push({
-        pathname: '/',
-        previousLocation: { pathname: this.props.location.pathname }
-      });
-    }, this);
-
     // If not authenticated, redirect to the Login page
     if (!layerClient.isAuthenticated) {
       this.props.history.push({
